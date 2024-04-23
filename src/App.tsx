@@ -68,11 +68,11 @@ export default () => {
   };
 
   return (
-    <SafeAreaView style={{ backgroundColor: '#181e34' }}>
+    <SafeAreaView style={styles.containerWrapper}>
       <ScrollView
         ref={scrollViewRef}
         contentContainerStyle={styles.container}
-        style={{ backgroundColor: '#181e34' }}>
+        style={styles.backgroundColor}>
         <View style={styles.formContainer}>
           <AppForm register={register} setValue={setValue} errors={errors}>
             <AppTextInput ref={nameInputPosition} name="name" label="Name " />
@@ -92,13 +92,14 @@ export default () => {
 };
 
 const styles = StyleSheet.create({
+  containerWrapper: { backgroundColor: '#181e34', flex: 1 },
   container: {
     justifyContent: 'center',
     backgroundColor: '#181e34',
   },
+  backgroundColor: { backgroundColor: '#181e34' },
   formContainer: {
     padding: 8,
-    flex: 1,
   },
   button: {
     backgroundColor: 'red',

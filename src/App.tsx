@@ -58,6 +58,7 @@ export default () => {
       }
     });
   };
+
   const scrollToYOffset = (y: number = 0) => {
     setTimeout(() => {
       if (scrollViewRef.current) {
@@ -82,23 +83,6 @@ export default () => {
               label="Password"
               secureTextEntry={true}
             />
-
-            <AppTextInput name="name1" label="Name " />
-            <AppTextInput name="email1" label="Email" />
-            <AppTextInput
-              name="password1"
-              label="Password"
-              secureTextEntry={true}
-            />
-
-            <AppTextInput name="name2" label="Name " />
-            <AppTextInput name="email2" label="Email" />
-            <AppTextInput
-              name="password2"
-              label="Password"
-              secureTextEntry={true}
-            />
-
             <Button title="Submit" onPress={handleSubmit(onSubmit, onError)} />
           </AppForm>
         </View>

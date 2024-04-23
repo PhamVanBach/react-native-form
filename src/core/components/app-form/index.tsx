@@ -1,24 +1,24 @@
 import * as React from 'react';
+import {useEffect} from 'react';
 import {TextInput} from 'react-native';
 
 interface Props {
   children: JSX.Element | JSX.Element[];
   register: any;
   errors: any;
-  validation: any;
   setValue: any;
 }
 
-const AppForm = ({register, errors, setValue, validation, children}: Props) => {
+const AppForm = ({register, errors, setValue, children}: Props) => {
   const Inputs = React.useRef<Array<TextInput>>([]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     (Array.isArray(children) ? [...children] : [children]).forEach(child => {
-      if (child.props.name) {
-        register({name: child.props.name}, validation[child.props.name]);
+      if (child.props?.name) {
+        register(child.props.name);
       }
     });
-  }, [children, register, validation]);
+  }, [children, register]);
 
   return (
     <>
@@ -40,8 +40,9 @@ const AppForm = ({register, errors, setValue, validation, children}: Props) => {
                   },
                   //onBlur: () => triggerValidation(child.props.name),
                   blurOnSubmit: false,
-                  //name: child.props.name,
+                  name: child.props.name,
                   error: errors[child.props.name],
+                  key: i,
                 },
               })
             : child;

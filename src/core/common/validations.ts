@@ -1,14 +1,19 @@
-export default {
-  name: {required: {value: true, message: 'Name is required'}},
-  email: {
-    required: {value: true, message: 'Email is required'},
-    pattern: {
-      value:
-        /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-      message: 'Invalid Email Format',
-    },
-  },
-  password: {
-    required: {value: true, message: 'Password is required'},
-  },
+import * as yup from 'yup';
+
+export const AppRegex = {
+  email_plus: /^\w+([\.-]?\w+([\+]?\d+)*)*@\w+([\.-]?\w+)*(\.\w\w+)+$/,
+  email: /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/,
+  number_regex: /\B(?=(\d{3})+(?!\d))/g,
+  phoneNumber: /(^(\(\d{3}\) \d{3}-\d{4})?$)|^$/,
 };
+
+export const registerSchema = yup.object().shape({
+  name: yup.string().max(255).required(),
+  email: yup
+    .string()
+    .matches(AppRegex.email_plus, 'Email is not valid')
+    .max(255)
+    .email()
+    .required(),
+  password: yup.string().min(6).max(255).required(),
+});

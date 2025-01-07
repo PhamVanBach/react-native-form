@@ -11,6 +11,7 @@ export default () => {
     handleSubmit,
     register,
     setValue,
+    trigger,
     formState: { errors },
   } = useForm<any>({
     resolver: yupResolver(registerSchema),
@@ -27,17 +28,21 @@ export default () => {
 
   return (
     <SafeAreaView style={styles.containerWrapper}>
-      <AppForm register={register} setValue={setValue} errors={errors}>
+      <AppForm
+        register={register}
+        setValue={setValue}
+        triggerValidation={trigger}
+        errors={errors}>
         <AppTextInput name="name" label="Name " />
+        <AppTextInput name="password" label="Password" secureTextEntry={true} />
+        <AppTextInput name="password" label="Password" secureTextEntry={true} />
+        <AppTextInput name="password" label="Password" secureTextEntry={true} />
+        <AppTextInput name="password" label="Password" secureTextEntry={true} />
+        <AppTextInput name="password" label="Password" secureTextEntry={true} />
+        <AppTextInput name="password" label="Password" secureTextEntry={true} />
+        <AppTextInput name="password" label="Password" secureTextEntry={true} />
+        <AppTextInput name="password" label="Password" secureTextEntry={true} />
         <AppTextInput name="email" label="Email" />
-        <AppTextInput name="password" label="Password" secureTextEntry={true} />
-        <AppTextInput name="password" label="Password" secureTextEntry={true} />
-        <AppTextInput name="password" label="Password" secureTextEntry={true} />
-        <AppTextInput name="password" label="Password" secureTextEntry={true} />
-        <AppTextInput name="password" label="Password" secureTextEntry={true} />
-        <AppTextInput name="password" label="Password" secureTextEntry={true} />
-        <AppTextInput name="password" label="Password" secureTextEntry={true} />
-        <AppTextInput name="password" label="Password" secureTextEntry={true} />
       </AppForm>
       <Button title="Submit" onPress={handleSubmit(onSubmit)} />
     </SafeAreaView>

@@ -13,9 +13,16 @@ interface Props {
   register: any;
   errors: any;
   setValue: any;
+  triggerValidation: any;
 }
 
-const AppForm = ({ register, errors, setValue, children }: Props) => {
+const AppForm = ({
+  register,
+  errors,
+  setValue,
+  children,
+  triggerValidation,
+}: Props) => {
   const Inputs = React.useRef<Array<TextInput>>([]);
   const InputOffset = React.useRef<any[]>([]);
 
@@ -37,6 +44,8 @@ const AppForm = ({ register, errors, setValue, children }: Props) => {
         Array.isArray(children) ? [...children] : [children]
       ).findIndex((child: any) => child.props.name === firstError);
 
+      console.log('index', index);
+
       if (Inputs.current[index]) {
         scrollToYOffset(InputOffset.current[index]);
       }
@@ -47,6 +56,7 @@ const AppForm = ({ register, errors, setValue, children }: Props) => {
   const scrollToYOffset = (y: number = 0) => {
     setTimeout(() => {
       if (scrollViewRef.current) {
+        console.log('scrollToYOffset', y);
         scrollViewRef.current.scrollTo({ x: 0, y });
       }
     }, 500);
@@ -61,8 +71,13 @@ const AppForm = ({ register, errors, setValue, children }: Props) => {
         <View style={styles.formContainer}>
           {(Array.isArray(children) ? [...children] : [children]).map(
             (child, i) => {
-              return child.props.name
-                ? React.createElement(child.type, {
+              return child.props.name ? (
+                <View
+                  key={`input-${child.props.name}-${i}`}
+                  onLayout={({ nativeEvent }: any) => {
+                    InputOffset.current[i] = nativeEvent.layout.y;
+                  }}>
+                  {React.createElement(child.type, {
                     ...{
                       ...child.props,
                       ref: (e: TextInput) => {
@@ -75,17 +90,17 @@ const AppForm = ({ register, errors, setValue, children }: Props) => {
                           ? Inputs.current[i + 1].focus()
                           : Inputs.current[i].blur();
                       },
-                      //onBlur: () => triggerValidation(child.props.name),
+                      onBlur: () => triggerValidation(child.props.name),
                       blurOnSubmit: false,
                       name: child.props.name,
                       error: errors[child.props.name],
-                      key: i,
-                      onContainerLayout: ({ nativeEvent }: any) => {
-                        InputOffset.current[i] = nativeEvent.layout.y;
-                      },
+                      key: `input-${child.props.name}-${i}`,
                     },
-                  })
-                : child;
+                  })}
+                </View>
+              ) : (
+                child
+              );
             },
           )}
         </View>

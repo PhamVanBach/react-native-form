@@ -21,13 +21,7 @@ const AppTextInput = React.forwardRef<any, Props>(
     const { label, labelStyle, error, ...inputProps } = props;
 
     return (
-      <View
-        style={styles.container}
-        onLayout={({ nativeEvent }: { nativeEvent: any }) => {
-          if (ref) {
-            ref.current = nativeEvent.layout.y;
-          }
-        }}>
+      <View style={styles.container}>
         {label && <Text style={[styles.label, labelStyle]}>{label}</Text>}
         <TextInput
           autoCapitalize="none"

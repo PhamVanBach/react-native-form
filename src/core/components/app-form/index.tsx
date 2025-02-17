@@ -44,8 +44,6 @@ const AppForm = ({
         Array.isArray(children) ? [...children] : [children]
       ).findIndex((child: any) => child.props.name === firstError);
 
-      console.log('index', index);
-
       if (Inputs.current[index]) {
         scrollToYOffset(InputOffset.current[index]);
       }
@@ -56,14 +54,13 @@ const AppForm = ({
   const scrollToYOffset = (y: number = 0) => {
     setTimeout(() => {
       if (scrollViewRef.current) {
-        console.log('scrollToYOffset', y);
         scrollViewRef.current.scrollTo({ x: 0, y });
       }
     }, 500);
   };
 
   return (
-    <KeyboardAvoidingView style={{ flex: 1 }} behavior={'padding'}>
+    <KeyboardAvoidingView style={styles.wrapper} behavior={'padding'}>
       <ScrollView
         ref={scrollViewRef}
         contentContainerStyle={styles.container}
@@ -112,6 +109,7 @@ const AppForm = ({
 export default AppForm;
 
 const styles = StyleSheet.create({
+  wrapper: { flex: 1 },
   containerWrapper: { backgroundColor: '#181e34', flex: 1 },
   container: {
     justifyContent: 'center',

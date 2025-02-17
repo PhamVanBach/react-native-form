@@ -24,6 +24,7 @@ const AppTextInput = React.forwardRef<any, Props>(
       <View style={styles.container}>
         {label && <Text style={[styles.label, labelStyle]}>{label}</Text>}
         <TextInput
+          testID={props.name}
           autoCapitalize="none"
           ref={ref}
           style={[styles.input, { borderColor: error ? '#fc6d47' : '#c0cbd3' }]}

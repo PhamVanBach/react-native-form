@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders correctly 1`] = `
+<View>
+  <Text>
+    1609459200 seconds have elapsed since the UNIX epoch.
+  </Text>
+</View>
+`;

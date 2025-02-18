@@ -38,7 +38,7 @@ export default () => {
         <AppTextInput name="password" label="Password" secureTextEntry={true} />
         <AppTextInput name="email" label="Email" />
       </AppForm>
-      <Button title="Submit" onPress={handleSubmit(onSubmit)} />
+      <Button testID="submit" title="Submit" onPress={handleSubmit(onSubmit)} />
     </SafeAreaView>
   );
 };

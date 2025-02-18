@@ -62,6 +62,7 @@ const AppForm = ({
   return (
     <KeyboardAvoidingView style={styles.wrapper} behavior={'padding'}>
       <ScrollView
+        testID="form"
         ref={scrollViewRef}
         contentContainerStyle={styles.container}
         style={styles.backgroundColor}>

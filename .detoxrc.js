@@ -9,6 +9,16 @@ module.exports = {
       setupTimeout: 120000,
     },
   },
+  behavior: {
+    init: {
+      reinstallApp: true,
+      exposeGlobals: false,
+    },
+    launchApp: 'auto',
+    cleanup: {
+      shutdownDevice: false,
+    },
+  },
   apps: {
     'ios.debug': {
       type: 'ios.app',
@@ -54,7 +64,7 @@ module.exports = {
     emulator: {
       type: 'android.emulator',
       device: {
-        avdName: 'Pixel_3a_API_30_x86',
+        avdName: 'Pixel_6_Pro_API_34',
       },
     },
   },
@@ -62,10 +72,44 @@ module.exports = {
     'ios.sim.debug': {
       device: 'simulator',
       app: 'ios.debug',
+      session: {
+        debugSynchronization: 20000,
+      },
     },
     'ios.sim.release': {
       device: 'simulator',
       app: 'ios.release',
+    },
+    'ios.manual': {
+      type: 'ios.manual',
+      behavior: {
+        launchApp: 'manual',
+      },
+      artifacts: false,
+      session: {
+        autoStart: true,
+        server: 'ws://localhost:8080',
+        sessionId: 'com.wix.demo.react.native',
+      },
+    },
+    'android.manual': {
+      device: 'emulator',
+      app: 'android.debug',
+      behavior: {
+        launchApp: 'manual',
+      },
+      session: {
+        autoStart: true,
+        debugSynchronization: 0,
+        server: 'ws://localhost:49834',
+        sessionId: 'test',
+      },
+      testRunner: {
+        args: {
+          testTimeout: 999999,
+        },
+      },
+      artifacts: false,
     },
     'android.att.debug': {
       device: 'attached',

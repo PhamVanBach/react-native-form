@@ -1,19 +1,20 @@
-import React, { useCallback, useEffect } from 'react';
-import { StyleSheet, View, Dimensions, BackHandler } from 'react-native';
-// import Animated, {
-//   useAnimatedStyle,
-//   useSharedValue,
-//   withSpring,
-//   interpolate,
-//   Extrapolate,
-// } from 'react-native-reanimated';
+import React, {useCallback, useEffect} from 'react';
+import {StyleSheet, View, Dimensions, BackHandler} from 'react-native';
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
+  interpolate,
+  Extrapolate,
+} from 'react-native-reanimated';
+
 import {
   Gesture,
   GestureDetector,
   GestureHandlerRootView,
 } from 'react-native-gesture-handler';
 
-const { height: SCREEN_HEIGHT } = Dimensions.get('window');
+const {height: SCREEN_HEIGHT} = Dimensions.get('window');
 const MAX_TRANSLATE_Y = -SCREEN_HEIGHT + 50;
 
 interface SheetProps {
@@ -31,96 +32,96 @@ export const Sheet: React.FC<SheetProps> = ({
   snapPoints = [0.9],
   backgroundColor = '#fff',
 }) => {
-  // const translateY = useSharedValue(0);
-  // const context = useSharedValue({ y: 0 });
-  // const active = useSharedValue(false);
+  const translateY = useSharedValue(0);
+  const context = useSharedValue({y: 0});
+  const active = useSharedValue(false);
 
-  // useEffect(() => {
-  //   if (isVisible) {
-  //     translateY.value = withSpring(-SCREEN_HEIGHT * snapPoints[0], {
-  //       damping: 50,
-  //     });
-  //   } else {
-  //     translateY.value = withSpring(0, {
-  //       damping: 50,
-  //     });
-  //   }
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [isVisible, snapPoints]);
+  useEffect(() => {
+    if (isVisible) {
+      translateY.value = withSpring(-SCREEN_HEIGHT * snapPoints[0], {
+        damping: 50,
+      });
+    } else {
+      translateY.value = withSpring(0, {
+        damping: 50,
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isVisible, snapPoints]);
 
-  // useEffect(() => {
-  //   const backHandler = BackHandler.addEventListener(
-  //     'hardwareBackPress',
-  //     () => {
-  //       if (isVisible) {
-  //         onClose();
-  //         return true;
-  //       }
-  //       return false;
-  //     },
-  //   );
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      () => {
+        if (isVisible) {
+          onClose();
+          return true;
+        }
+        return false;
+      },
+    );
 
-  //   return () => backHandler.remove();
-  // }, [isVisible, onClose]);
+    return () => backHandler.remove();
+  }, [isVisible, onClose]);
 
-  // const gesture = Gesture.Pan()
-  //   .onStart(() => {
-  //     context.value = { y: translateY.value };
-  //     active.value = true;
-  //   })
-  //   .onUpdate(event => {
-  //     translateY.value = event.translationY + context.value.y;
-  //     translateY.value = Math.max(translateY.value, MAX_TRANSLATE_Y);
-  //   })
-  //   .onEnd(() => {
-  //     active.value = false;
-  //     if (translateY.value > -SCREEN_HEIGHT * 0.3) {
-  //       onClose();
-  //     } else {
-  //       translateY.value = withSpring(-SCREEN_HEIGHT * snapPoints[0], {
-  //         damping: 50,
-  //       });
-  //     }
-  //   });
+  const gesture = Gesture.Pan()
+    .onStart(() => {
+      context.value = {y: translateY.value};
+      active.value = true;
+    })
+    .onUpdate(event => {
+      translateY.value = event.translationY + context.value.y;
+      translateY.value = Math.max(translateY.value, MAX_TRANSLATE_Y);
+    })
+    .onEnd(() => {
+      active.value = false;
+      if (translateY.value > -SCREEN_HEIGHT * 0.3) {
+        onClose();
+      } else {
+        translateY.value = withSpring(-SCREEN_HEIGHT * snapPoints[0], {
+          damping: 50,
+        });
+      }
+    });
 
-  // const rBottomSheetStyle = useAnimatedStyle(() => {
-  //   return {
-  //     transform: [{ translateY: translateY.value }],
-  //   };
-  // });
+  const rBottomSheetStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{translateY: translateY.value}],
+    };
+  });
 
-  // const rBackdropStyle = useAnimatedStyle(() => {
-  //   return {
-  //     opacity: interpolate(
-  //       translateY.value,
-  //       [0, -SCREEN_HEIGHT * 0.5],
-  //       [0, 0.5],
-  //       Extrapolate.CLAMP,
-  //     ),
-  //   };
-  // });
+  const rBackdropStyle = useAnimatedStyle(() => {
+    return {
+      opacity: interpolate(
+        translateY.value,
+        [0, -SCREEN_HEIGHT * 0.5],
+        [0, 0.5],
+        Extrapolate.CLAMP,
+      ),
+    };
+  });
 
-  // const handleBackdropPress = useCallback(() => {
-  //   onClose();
-  // }, [onClose]);
+  const handleBackdropPress = useCallback(() => {
+    onClose();
+  }, [onClose]);
 
-  // if (!isVisible) {
-  //   return null;
-  // }
+  if (!isVisible) {
+    return null;
+  }
 
   return (
     <GestureHandlerRootView style={styles.container}>
-      {/* <Animated.View
+      <Animated.View
         style={[styles.backdrop, rBackdropStyle]}
         onTouchEnd={handleBackdropPress}
       />
       <GestureDetector gesture={gesture}>
         <Animated.View
-          style={[styles.sheet, rBottomSheetStyle, { backgroundColor }]}>
+          style={[styles.sheet, rBottomSheetStyle, {backgroundColor}]}>
           <View style={styles.handle} />
           {children}
         </Animated.View>
-      </GestureDetector> */}
+      </GestureDetector>
     </GestureHandlerRootView>
   );
 };

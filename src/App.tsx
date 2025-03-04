@@ -1,8 +1,10 @@
 import * as React from 'react';
 import MainNavigator from './core/navigation';
-import { InteractionManager } from 'react-native';
-import { useEffect } from 'react';
-import { BiometricsService } from './core/utils/biometrics';
+import {InteractionManager} from 'react-native';
+import {useEffect} from 'react';
+import {BiometricsService} from './core/utils/biometrics';
+import {SheetProvider} from './core/contexts/SheetContext';
+import {SheetRegistration} from './core/components/sheet/sheet-registation';
 
 export default () => {
   useEffect(() => {
@@ -22,5 +24,10 @@ export default () => {
       InteractionManager.setDeadline(0);
     }, 0);
   }
-  return <MainNavigator />;
+  return (
+    <SheetProvider>
+      <SheetRegistration />
+      <MainNavigator />;
+    </SheetProvider>
+  );
 };

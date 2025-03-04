@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
-import { View } from 'react-native';
-import { BiometricAuth } from '../biometric-auth';
-import { LockScreen } from '../lock-screen';
+import React from 'react';
+import {View} from 'react-native';
+import {useSheetContext} from '../../contexts/SheetContext';
+import {ESheetID} from '../../types/sheets';
+import {BiometricAuth} from '../biometric-auth';
 
 interface AuthenticationProps {
   onAuthSuccess: () => void;
@@ -12,27 +13,24 @@ export const Authentication: React.FC<AuthenticationProps> = ({
   onAuthSuccess,
   onAuthFail,
 }) => {
-  const [showLockScreen, setShowLockScreen] = useState(false);
+  const {openSheet, closeSheet} = useSheetContext();
+
+  const onFail = () => {
+    onAuthFail?.();
+    closeSheet();
+  };
+
+  const onSuccess = () => {
+    onAuthSuccess?.();
+    closeSheet();
+  };
 
   const handleBiometricFallback = () => {
-    setShowLockScreen(true);
+    openSheet(ESheetID.ACTION_BUTTON_SHEET, {
+      onSuccess: onSuccess,
+      onCancel: onFail,
+    });
   };
-
-  const handleLockScreenSuccess = () => {
-    setShowLockScreen(false);
-    onAuthSuccess();
-  };
-
-  const handleCancel = () => {
-    setShowLockScreen(false);
-    onAuthFail?.();
-  };
-
-  if (showLockScreen) {
-    return (
-      <LockScreen onSuccess={handleLockScreenSuccess} onCancel={handleCancel} />
-    );
-  }
 
   return (
     <View>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Animated,
   StyleSheet,
@@ -93,7 +93,7 @@ export const PinCode: React.FC<PinCodeProps> = ({
   return (
     <View style={styles.container}>
       <Animated.View
-        style={[styles.dotsContainer, { transform: [{ translateX: shake }] }]}>
+        style={[styles.dotsContainer, {transform: [{translateX: shake}]}]}>
         {renderDots()}
       </Animated.View>
 
@@ -116,7 +116,6 @@ export const PinCode: React.FC<PinCodeProps> = ({
 const styles = StyleSheet.create({
   container: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'red',
     justifyContent: 'center',
     alignItems: 'center',
     paddingBottom: 50,

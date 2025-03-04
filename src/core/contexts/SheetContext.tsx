@@ -1,28 +1,48 @@
-import React, {createContext, useContext, ReactNode} from 'react';
-import {Sheet} from '../components/sheet';
-import {useSheet} from '../hooks/useSheet';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  ReactNode,
+  ComponentType,
+} from 'react';
+import {ESheetID} from '../types/sheets';
+
+type SheetComponent = ComponentType<any>;
+type SheetRegistry = Record<ESheetID, SheetComponent>;
 
 interface SheetContextType {
-  open: () => void;
-  close: () => void;
+  registerSheet: (id: ESheetID, component: SheetComponent) => void;
+  openSheet: (id: ESheetID, props?: any) => void;
+  closeSheet: () => void;
 }
 
-const SheetContext = createContext<SheetContextType | undefined>(undefined);
+const SheetContext = createContext<SheetContextType | null>(null);
 
-export const SheetProvider: React.FC<{
-  children: ReactNode;
-}> = ({children}) => {
-  const sheet = useSheet();
+export const SheetProvider: React.FC<{children: ReactNode}> = ({children}) => {
+  const [sheets, setSheets] = useState<SheetRegistry>({} as SheetRegistry);
+  const [activeSheet, setActiveSheet] = useState<{
+    id: ESheetID | null;
+    props?: any;
+  }>({id: null});
+
+  const registerSheet = (id: ESheetID, component: SheetComponent) => {
+    setSheets(prev => ({...prev, [id]: component}));
+  };
+
+  const openSheet = (id: ESheetID, props?: any) => {
+    setActiveSheet({id, props});
+  };
+
+  const closeSheet = () => {
+    setActiveSheet({id: null});
+  };
+
+  const ActiveSheetComponent = activeSheet.id ? sheets[activeSheet.id] : null;
 
   return (
-    <SheetContext.Provider value={sheet}>
+    <SheetContext.Provider value={{registerSheet, openSheet, closeSheet}}>
       {children}
-      <Sheet
-        isVisible={sheet.isVisible}
-        onClose={sheet.close}
-        snapPoints={[0.9]}>
-        {children}
-      </Sheet>
+      {ActiveSheetComponent && <ActiveSheetComponent {...activeSheet.props} />}
     </SheetContext.Provider>
   );
 };

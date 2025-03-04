@@ -1,0 +1,87 @@
+default_platform(:ios)
+
+before_all do
+  ensure_git_branch
+  ensure_git_status_clean
+  git_pull
+end
+
+platform :ios do
+  desc "Fetch signing certificates and provisioning profiles"
+  lane :certificates do
+    match(
+      type: "appstore",
+      readonly: true,
+      app_identifier: ["com.reactnativeform"]
+    )
+  end
+
+  desc "Build and deploy iOS app to TestFlight"
+  lane :beta do
+    match(
+      type: "appstore",
+      readonly: true,
+      app_identifier: ["com.reactnativeform"]
+    )
+    increment_build_number(
+      xcodeproj: "ios/ReactNativeForm.xcodeproj"
+    )
+    build_ios_app(
+      scheme: "ReactNativeForm",
+      workspace: "ios/ReactNativeForm.xcworkspace",
+      export_method: "app-store"
+    )
+    upload_to_testflight(
+      skip_waiting_for_build_processing: true
+    )
+    clean_build_artifacts
+  end
+
+  desc "Build and deploy iOS app to App Store"
+  lane :release do
+    match(
+      type: "appstore",
+      readonly: true,
+      app_identifier: ["com.reactnativeform"]
+    )
+    increment_build_number(
+      xcodeproj: "ios/ReactNativeForm.xcodeproj"
+    )
+    build_ios_app(
+      scheme: "ReactNativeForm",
+      workspace: "ios/ReactNativeForm.xcworkspace",
+      export_method: "app-store"
+    )
+    upload_to_app_store(
+      force: true,
+      skip_screenshots: true,
+      skip_metadata: true
+    )
+    clean_build_artifacts
+  end
+end
+
+platform :android do
+  desc "Build and deploy Android app to Play Store Beta track"
+  lane :beta do
+    gradle(
+      task: "clean assembleRelease",
+      project_dir: "android/"
+    )
+    upload_to_play_store(
+      track: 'beta',
+      aab: "#{lane_context[SharedValues::GRADLE_AAB_OUTPUT_PATH]}"
+    )
+  end
+
+  desc "Build and deploy Android app to Play Store"
+  lane :release do
+    gradle(
+      task: "clean assembleRelease",
+      project_dir: "android/"
+    )
+    upload_to_play_store(
+      aab: "#{lane_context[SharedValues::GRADLE_AAB_OUTPUT_PATH]}"
+    )
+  end
+end

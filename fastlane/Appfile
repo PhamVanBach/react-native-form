@@ -1,0 +1,6 @@
+app_identifier("com.reactnativeform") # The bundle identifier of your app
+apple_id("your@email.com") # Your Apple ID email
+
+# For Android
+json_key_file("path/to/play-store-credentials.json") # Path to the json secret file - Follow https://docs.fastlane.tools/actions/supply/#setup
+package_name("com.reactnativeform") # e.g. com.krausefx.app 

@@ -1,0 +1,6 @@
+git_url("https://github.com/your-org/certificates")
+storage_mode("git")
+type("development") # The default type, can be: appstore, adhoc, enterprise or development
+
+app_identifier(["com.react_native_form"])
+username("your@email.com") # Your Apple Developer Portal username 

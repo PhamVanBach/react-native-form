@@ -1,14 +1,17 @@
 import React, {useState} from 'react';
-import {View, Text, StyleSheet, Alert, TouchableOpacity} from 'react-native';
+import {Alert, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import {Sheet} from '../..';
 import {PinCode} from '../../../pin-code';
 
 interface LockScreenProps {
+  visible: boolean;
   onSuccess: () => void;
-  onCancel?: () => void;
+  onCancel: () => void;
 }
 
 export const LockScreen: React.FC<LockScreenProps> = ({
+  visible = false,
   onSuccess,
   onCancel,
 }) => {
@@ -38,8 +41,13 @@ export const LockScreen: React.FC<LockScreenProps> = ({
   };
 
   return (
-    <View style={styles.container}>
-      <SafeAreaView style={styles.contentContainer}>
+    <Sheet
+      isVisible={visible}
+      onClose={onCancel}
+      snapPoints={[1]}
+      gestureEnabled={false}
+      backgroundColor="#fff">
+      <SafeAreaView style={styles.container} edges={['top']}>
         <View style={styles.header}>
           <Text style={styles.title}>Enter PIN</Text>
           {onCancel && (
@@ -50,14 +58,15 @@ export const LockScreen: React.FC<LockScreenProps> = ({
         </View>
         <PinCode onComplete={handleComplete} length={4} error={error} />
       </SafeAreaView>
-    </View>
+    </Sheet>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    ...StyleSheet.absoluteFillObject,
+    flex: 1,
     backgroundColor: '#fff',
+    gap: 16,
   },
   contentContainer: {
     flex: 1,
@@ -66,8 +75,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 16,
-    position: 'relative',
+    padding: 24,
+    marginBottom: 24,
   },
   title: {
     fontSize: 18,
@@ -76,8 +85,8 @@ const styles = StyleSheet.create({
   },
   cancelButton: {
     position: 'absolute',
-    right: 16,
-    top: 16,
+    right: 24,
+    top: 24,
   },
   cancelText: {
     color: '#007AFF',

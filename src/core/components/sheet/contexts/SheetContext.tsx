@@ -5,7 +5,7 @@ import React, {
   ReactNode,
   ComponentType,
 } from 'react';
-import {ESheetID} from '../types/sheets';
+import {ESheetID} from '../../../types/sheets';
 
 type SheetComponent = ComponentType<any>;
 type SheetRegistry = Record<ESheetID, SheetComponent>;

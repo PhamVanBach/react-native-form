@@ -1,53 +1,71 @@
-import React, {useCallback, useEffect} from 'react';
-import {StyleSheet, View, Dimensions, BackHandler} from 'react-native';
-import Animated, {
-  useAnimatedStyle,
-  useSharedValue,
-  withSpring,
-  interpolate,
-  Extrapolate,
-} from 'react-native-reanimated';
-
+import React, {useCallback, useEffect, useRef} from 'react';
 import {
-  Gesture,
-  GestureDetector,
-  GestureHandlerRootView,
-} from 'react-native-gesture-handler';
+  Animated,
+  BackHandler,
+  Dimensions,
+  StyleSheet,
+  View,
+  PanResponder,
+} from 'react-native';
 
 const {height: SCREEN_HEIGHT} = Dimensions.get('window');
-const MAX_TRANSLATE_Y = -SCREEN_HEIGHT + 50;
 
 interface SheetProps {
   children: React.ReactNode;
   isVisible: boolean;
   onClose: () => void;
+  gestureEnabled?: boolean;
   snapPoints?: number[];
   backgroundColor?: string;
 }
 
 export const Sheet: React.FC<SheetProps> = ({
   children,
-  isVisible,
+  isVisible = false,
   onClose,
+  gestureEnabled = true,
   snapPoints = [0.9],
   backgroundColor = '#fff',
 }) => {
-  const translateY = useSharedValue(0);
-  const context = useSharedValue({y: 0});
-  const active = useSharedValue(false);
+  const translateY = useRef(new Animated.Value(SCREEN_HEIGHT)).current;
+  const opacity = useRef(new Animated.Value(0)).current;
+
+  const panResponder = useRef(
+    PanResponder.create({
+      onStartShouldSetPanResponder: () => gestureEnabled,
+      onMoveShouldSetPanResponder: () => gestureEnabled,
+      onPanResponderMove: (_, {dy}) => {
+        if (!gestureEnabled) return;
+        const newValue = -SCREEN_HEIGHT * snapPoints[0] + dy;
+        translateY.setValue(Math.min(Math.max(newValue, -SCREEN_HEIGHT), 0));
+      },
+      onPanResponderRelease: (_, {dy}) => {
+        if (!gestureEnabled) return;
+        if (dy > SCREEN_HEIGHT * 0.2) {
+          onClose();
+        } else {
+          Animated.spring(translateY, {
+            toValue: -SCREEN_HEIGHT * snapPoints[0],
+            useNativeDriver: true,
+          }).start();
+        }
+      },
+    }),
+  ).current;
 
   useEffect(() => {
-    if (isVisible) {
-      translateY.value = withSpring(-SCREEN_HEIGHT * snapPoints[0], {
-        damping: 50,
-      });
-    } else {
-      translateY.value = withSpring(0, {
-        damping: 50,
-      });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isVisible, snapPoints]);
+    Animated.parallel([
+      Animated.spring(translateY, {
+        toValue: isVisible ? -SCREEN_HEIGHT * snapPoints[0] : SCREEN_HEIGHT,
+        useNativeDriver: true,
+      }),
+      Animated.timing(opacity, {
+        toValue: isVisible ? 0.5 : 0,
+        duration: 300,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  }, [isVisible, snapPoints, translateY, opacity]);
 
   useEffect(() => {
     const backHandler = BackHandler.addEventListener(
@@ -60,69 +78,21 @@ export const Sheet: React.FC<SheetProps> = ({
         return false;
       },
     );
-
     return () => backHandler.remove();
   }, [isVisible, onClose]);
 
-  const gesture = Gesture.Pan()
-    .onStart(() => {
-      context.value = {y: translateY.value};
-      active.value = true;
-    })
-    .onUpdate(event => {
-      translateY.value = event.translationY + context.value.y;
-      translateY.value = Math.max(translateY.value, MAX_TRANSLATE_Y);
-    })
-    .onEnd(() => {
-      active.value = false;
-      if (translateY.value > -SCREEN_HEIGHT * 0.3) {
-        onClose();
-      } else {
-        translateY.value = withSpring(-SCREEN_HEIGHT * snapPoints[0], {
-          damping: 50,
-        });
-      }
-    });
-
-  const rBottomSheetStyle = useAnimatedStyle(() => {
-    return {
-      transform: [{translateY: translateY.value}],
-    };
-  });
-
-  const rBackdropStyle = useAnimatedStyle(() => {
-    return {
-      opacity: interpolate(
-        translateY.value,
-        [0, -SCREEN_HEIGHT * 0.5],
-        [0, 0.5],
-        Extrapolate.CLAMP,
-      ),
-    };
-  });
-
-  const handleBackdropPress = useCallback(() => {
-    onClose();
-  }, [onClose]);
-
-  if (!isVisible) {
-    return null;
-  }
+  if (!isVisible) return null;
 
   return (
-    <GestureHandlerRootView style={styles.container}>
+    <View style={styles.container}>
+      {gestureEnabled && <Animated.View style={[styles.backdrop, {opacity}]} />}
       <Animated.View
-        style={[styles.backdrop, rBackdropStyle]}
-        onTouchEnd={handleBackdropPress}
-      />
-      <GestureDetector gesture={gesture}>
-        <Animated.View
-          style={[styles.sheet, rBottomSheetStyle, {backgroundColor}]}>
-          <View style={styles.handle} />
-          {children}
-        </Animated.View>
-      </GestureDetector>
-    </GestureHandlerRootView>
+        {...panResponder.panHandlers}
+        style={[styles.sheet, {backgroundColor, transform: [{translateY}]}]}>
+        {gestureEnabled && <View style={styles.handle} />}
+        {children}
+      </Animated.View>
+    </View>
   );
 };
 
@@ -142,10 +112,7 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: -4,
-    },
+    shadowOffset: {width: 0, height: -4},
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 5,

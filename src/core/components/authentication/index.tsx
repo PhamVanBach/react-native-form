@@ -1,6 +1,6 @@
 import React from 'react';
 import {View} from 'react-native';
-import {useSheetContext} from '../../contexts/SheetContext';
+import {useSheetContext} from '../sheet/contexts/SheetContext';
 import {ESheetID} from '../../types/sheets';
 import {BiometricAuth} from '../biometric-auth';
 
@@ -27,6 +27,7 @@ export const Authentication: React.FC<AuthenticationProps> = ({
 
   const handleBiometricFallback = () => {
     openSheet(ESheetID.ACTION_BUTTON_SHEET, {
+      visible: true,
       onSuccess: onSuccess,
       onCancel: onFail,
     });

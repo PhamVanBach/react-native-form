@@ -3,8 +3,8 @@ import MainNavigator from './core/navigation';
 import {InteractionManager} from 'react-native';
 import {useEffect} from 'react';
 import {BiometricsService} from './core/utils/biometrics';
-import {SheetProvider} from './core/contexts/SheetContext';
 import {SheetRegistration} from './core/components/sheet/sheet-registation';
+import {SheetProvider} from './core/components/sheet/contexts/SheetContext';
 
 export default () => {
   useEffect(() => {

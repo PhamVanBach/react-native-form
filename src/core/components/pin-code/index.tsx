@@ -115,7 +115,6 @@ export const PinCode: React.FC<PinCodeProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    ...StyleSheet.absoluteFillObject,
     justifyContent: 'center',
     alignItems: 'center',
     paddingBottom: 50,

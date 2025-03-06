@@ -4,12 +4,12 @@ import {persistStore, persistReducer} from 'redux-persist';
 import {reduxStorage} from '../storage/mmkv';
 import rootReducer from './reducers';
 import rootSaga from './sagas';
+import {errorMiddleware} from './middleware/errorMiddleware';
 
 const persistConfig = {
   key: 'root',
   storage: reduxStorage,
-  // Optionally, specify which reducers to persist
-  whitelist: ['auth', 'settings'],
+  whitelist: ['auth'],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
@@ -22,7 +22,7 @@ export const store = configureStore({
       serializableCheck: {
         ignoredActions: ['persist/PERSIST', 'persist/REHYDRATE'],
       },
-    }).concat(sagaMiddleware),
+    }).concat(sagaMiddleware, errorMiddleware),
 });
 
 export const persistor = persistStore(store);

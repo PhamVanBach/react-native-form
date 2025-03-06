@@ -2,51 +2,34 @@ import {yupResolver} from '@hookform/resolvers/yup';
 import {useNavigation} from '@react-navigation/native';
 import * as React from 'react';
 import {useForm} from 'react-hook-form';
-import {Alert, Button, SafeAreaView, StyleSheet, Text} from 'react-native';
-import {registerSchema} from '../../../core/common/validations';
+import {Button, SafeAreaView, StyleSheet, Text} from 'react-native';
+import {loginSchema} from '../../../core/common/validations';
 import AppForm from '../../../core/components/app-form';
 import AppHeader from '../../../core/components/app-header';
 import AppTextInput from '../../../core/components/app-text-input';
 import {Authentication} from '../../../core/components/authentication';
-import {User} from '../../../database/models';
+import {useAppDispatch} from '../../../core/redux/hooks';
+import {login} from '../../../core/redux/reducers/authSlice';
 import {useDatabase} from '../../../database/hooks/useDatabase';
+
 const LoginScreen = () => {
   const navigation = useNavigation<any>();
-
-  const {db, isReady} = useDatabase();
-  const [users, setUsers] = React.useState<User[]>([]);
+  const dispatch = useAppDispatch();
+  const {isReady} = useDatabase();
 
   const {
+    control,
     handleSubmit,
     register,
-    setValue,
     trigger,
     formState: {errors},
   } = useForm<any>({
-    resolver: yupResolver(registerSchema),
+    resolver: yupResolver(loginSchema),
     defaultValues: {
-      email: '',
-      password: '',
+      email: 'bachne@gmail.com',
+      password: '123456',
     },
   });
-
-  React.useEffect(() => {
-    if (!isReady) {
-      return;
-    }
-    loadUsers();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isReady]);
-
-  const loadUsers = async () => {
-    try {
-      console.log('Loading users...');
-      const response = await db.select('users');
-      setUsers(response.data);
-    } catch (error) {
-      console.error('Error loading users:', error);
-    }
-  };
 
   const handleAuthSuccess = () => {
     navigation.navigate('Home');
@@ -56,21 +39,8 @@ const LoginScreen = () => {
     console.log('Authentication failed');
   };
 
-  const handleDeleteAccount = async () => {
-    await db.delete('users', 'id = ?', [users[0].id]);
-    await loadUsers();
-  };
-
   const onSubmit = (data: {email: string; password: string}) => {
-    if (
-      users.some(
-        user => user.email === data.email && user.password === data.password,
-      )
-    ) {
-      navigation.navigate('Home');
-    } else {
-      Alert.alert('Invalid credentials', 'Please try again');
-    }
+    dispatch(login(data));
   };
 
   if (!isReady) {
@@ -81,8 +51,8 @@ const LoginScreen = () => {
     <SafeAreaView testID="login-screen" style={styles.containerWrapper}>
       <AppHeader title="Login" />
       <AppForm
+        control={control}
         register={register}
-        setValue={setValue}
         triggerValidation={trigger}
         errors={errors}>
         <AppTextInput name="email" label="Email" />
@@ -94,7 +64,6 @@ const LoginScreen = () => {
         onAuthFail={handleAuthFail}
       />
       <Button testID="submit" title="Submit" onPress={handleSubmit(onSubmit)} />
-      <Button title="Delete Account" onPress={handleDeleteAccount} />
     </SafeAreaView>
   );
 };

@@ -2,30 +2,32 @@ import {yupResolver} from '@hookform/resolvers/yup';
 import {useNavigation} from '@react-navigation/native';
 import * as React from 'react';
 import {useForm} from 'react-hook-form';
-import {Alert, Button, SafeAreaView, StyleSheet, Text} from 'react-native';
+import {Button, SafeAreaView, StyleSheet, Text} from 'react-native';
 import {registerSchema} from '../../../core/common/validations';
 import AppForm from '../../../core/components/app-form';
 import AppHeader from '../../../core/components/app-header';
 import AppTextInput from '../../../core/components/app-text-input';
+import {useAppDispatch} from '../../../core/redux/hooks';
 import {useDatabase} from '../../../database/hooks/useDatabase';
+import {registerUser} from '../../../core/redux/reducers/authSlice';
 
 const RegisterScreen = () => {
   const navigation = useNavigation<any>();
-  const {db, isReady} = useDatabase();
+  const dispatch = useAppDispatch();
+  const {isReady} = useDatabase();
 
   const {
+    control,
     handleSubmit,
     register,
-    setValue,
     trigger,
     formState: {errors},
   } = useForm<any>({
     resolver: yupResolver(registerSchema),
     defaultValues: {
-      name: '',
-      email: '',
-      password: '',
-      confirmPassword: '',
+      name: 'Bach Ne',
+      email: 'bachne@gmail.com',
+      password: '123456',
     },
   });
 
@@ -34,27 +36,7 @@ const RegisterScreen = () => {
     email: string;
     password: string;
   }) => {
-    try {
-      const response = await db.insert('users', {
-        name: data.name,
-        email: data.email,
-        password: data.password,
-      });
-
-      if (response.error) {
-        Alert.alert('Error', response.error.message);
-        return;
-      }
-
-      Alert.alert('Success', 'Account created successfully', [
-        {
-          text: 'OK',
-          onPress: () => navigation.navigate('Login'),
-        },
-      ]);
-    } catch (error: any) {
-      Alert.alert('Error', error.message || 'An error occurred');
-    }
+    dispatch(registerUser(data));
   };
 
   if (!isReady) {
@@ -65,18 +47,13 @@ const RegisterScreen = () => {
     <SafeAreaView testID="register-screen" style={styles.containerWrapper}>
       <AppHeader title="Register" />
       <AppForm
+        control={control}
         register={register}
-        setValue={setValue}
         triggerValidation={trigger}
         errors={errors}>
         <AppTextInput name="name" label="Name" />
         <AppTextInput name="email" label="Email" />
         <AppTextInput name="password" label="Password" secureTextEntry={true} />
-        <AppTextInput
-          name="confirmPassword"
-          label="Confirm Password"
-          secureTextEntry={true}
-        />
       </AppForm>
 
       <Button

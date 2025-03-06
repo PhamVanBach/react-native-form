@@ -1,17 +1,14 @@
 // filepath: /Users/bachpham/Desktop/react-native-form/src/core/navigation/index.tsx
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import {NavigationContainer} from '@react-navigation/native';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import React from 'react';
-import {
-  createNavigationContainerRef,
-  NavigationContainer,
-} from '@react-navigation/native';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import AuthScreen from '../../modules/auth';
 import Home from '../../modules/home';
-import LoginScreen from '../../modules/auth/login';
+import {navigationRef} from './navigationRef';
 
 const Tab = createBottomTabNavigator();
 const MainStack = createNativeStackNavigator();
-export const navigationRef = createNavigationContainerRef<any>();
 
 const TabStack = () => {
   return (
@@ -30,7 +27,7 @@ const TabStack = () => {
       />
       <Tab.Screen
         name="Profile"
-        component={LoginScreen}
+        component={AuthScreen}
         options={{
           tabBarButtonTestID: 'profile-tab',
         }}

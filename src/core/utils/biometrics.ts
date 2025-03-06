@@ -1,4 +1,4 @@
-import ReactNativeBiometrics, { BiometryTypes } from 'react-native-biometrics';
+import ReactNativeBiometrics, {BiometryTypes} from 'react-native-biometrics';
 
 // Initialize outside the class as a singleton
 const rnBiometrics = new ReactNativeBiometrics();
@@ -11,9 +11,7 @@ export class BiometricsService {
         return false;
       }
 
-      const { available, biometryType } =
-        await rnBiometrics.isSensorAvailable();
-      console.log('Biometrics check:', { available, biometryType }); // Debug log
+      const {available, biometryType} = await rnBiometrics.isSensorAvailable();
 
       return (
         available &&
@@ -34,7 +32,7 @@ export class BiometricsService {
         return false;
       }
 
-      const { success } = await rnBiometrics.simplePrompt({
+      const {success} = await rnBiometrics.simplePrompt({
         promptMessage: 'Please authenticate',
         cancelButtonText: 'Cancel',
       });
@@ -52,7 +50,7 @@ export class BiometricsService {
         return false;
       }
 
-      const { publicKey } = await rnBiometrics.createKeys();
+      const {publicKey} = await rnBiometrics.createKeys();
       return !!publicKey;
     } catch (error) {
       console.error('Key creation failed:', error);
@@ -67,7 +65,7 @@ export class BiometricsService {
         return null;
       }
 
-      const { success, signature } = await rnBiometrics.createSignature({
+      const {success, signature} = await rnBiometrics.createSignature({
         promptMessage: 'Sign in',
         payload,
       });
@@ -88,7 +86,7 @@ export class BiometricsService {
         return false;
       }
 
-      const { success } = await rnBiometrics.simplePrompt({
+      const {success} = await rnBiometrics.simplePrompt({
         promptMessage: 'Please authenticate',
         cancelButtonText: 'Use PIN',
         fallbackPromptMessage: 'Use PIN instead',

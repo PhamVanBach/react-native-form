@@ -1,8 +1,11 @@
 import React, {useState} from 'react';
 import {Alert, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import {SafeAreaView} from 'react-native-safe-area-context';
+import {
+  initialWindowMetrics,
+  SafeAreaView,
+} from 'react-native-safe-area-context';
 import {Sheet} from '../..';
-import {PinCode} from '../../../pin-code';
+import {PinCode} from '../../../../components/pin-code';
 
 interface LockScreenProps {
   visible: boolean;
@@ -67,6 +70,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
     gap: 16,
+    paddingTop: initialWindowMetrics?.insets.top || 0,
   },
   contentContainer: {
     flex: 1,

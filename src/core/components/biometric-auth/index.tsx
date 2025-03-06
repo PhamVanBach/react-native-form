@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import { Button, View } from 'react-native';
-import { BiometricsService } from '../../utils/biometrics';
+import React, {useEffect, useState} from 'react';
+import {Button, View} from 'react-native';
+import {BiometricsService} from '../../utils/biometrics';
 
 interface BiometricAuthProps {
   onSuccess: () => void;
@@ -23,9 +23,9 @@ export const BiometricAuth: React.FC<BiometricAuthProps> = ({
   const checkBiometrics = async () => {
     const available = await BiometricsService.isBiometricsAvailable();
     setIsBiometricsAvailable(available);
-    if (!available) {
-      onFallback();
-    }
+    // if (!available) {
+    //   onFallback();
+    // }
   };
 
   const handleAuthentication = async () => {

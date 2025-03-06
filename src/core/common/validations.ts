@@ -7,8 +7,17 @@ export const AppRegex = {
   phoneNumber: /(^(\(\d{3}\) \d{3}-\d{4})?$)|^$/,
 };
 
+export const loginSchema = yup.object().shape({
+  email: yup
+    .string()
+    .matches(AppRegex.email_plus, 'Email is not valid')
+    .max(255)
+    .email()
+    .required(),
+  password: yup.string().min(6).max(255).required(),
+});
 export const registerSchema = yup.object().shape({
-  name: yup.string().max(255).required(),
+  name: yup.string().min(3).max(255).required(),
   email: yup
     .string()
     .matches(AppRegex.email_plus, 'Email is not valid')

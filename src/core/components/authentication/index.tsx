@@ -1,6 +1,6 @@
 import React from 'react';
 import {View} from 'react-native';
-import {useSheetContext} from '../sheet/contexts/SheetContext';
+import {useSheetContext} from '../../screens/sheet/contexts/SheetContext';
 import {ESheetID} from '../../types/sheets';
 import {BiometricAuth} from '../biometric-auth';
 

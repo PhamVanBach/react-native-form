@@ -5,12 +5,12 @@ import {useEffect} from 'react';
 import {BiometricsService} from './core/utils/biometrics';
 import {SheetRegistration} from './core/screens/sheet/sheet-registation';
 import {SheetProvider} from './core/screens/sheet/contexts/SheetContext';
-import {DatabaseService} from './database/services';
+// import {DatabaseService} from './database/services';
 
 export default () => {
-  useEffect(() => {
-    DatabaseService.getInstance().initDatabase();
-  }, []);
+  // useEffect(() => {
+  //   DatabaseService.getInstance().initDatabase();
+  // }, []);
 
   useEffect(() => {
     const initBiometrics = async () => {

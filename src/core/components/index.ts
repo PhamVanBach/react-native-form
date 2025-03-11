@@ -5,7 +5,7 @@ import {Authentication} from './authentication';
 import {LockScreen} from './lock-screen';
 import {PinCode} from './pin-code';
 import {AppTabView} from './app-tab-view';
-
+import {AppIcon} from './app-icon';
 export {
   AppForm,
   AppTextInput,
@@ -14,4 +14,5 @@ export {
   LockScreen,
   PinCode,
   AppTabView,
+  AppIcon,
 };

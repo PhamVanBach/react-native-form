@@ -1,24 +1,38 @@
 import React from 'react';
 import {AppTabView} from '../../core/components';
+import AppResponsiveView from '../../core/components/app-responsive-view';
 import LoginScreen from './login';
 import RegisterScreen from './register';
-import {SafeAreaView} from 'react-native-safe-area-context';
+import AppTheme from '../../core/themes/app-themes';
+
+const tabs = ['login', 'register'];
+const routes = tabs.map(tab => ({key: tab, title: tab}));
+const sceneProps = {
+  register: {
+    onSuccess: () => console.log('Registration success'),
+  },
+  login: {
+    onSuccess: () => console.log('Login success'),
+  },
+};
 
 const AuthScreen = () => {
-  const routes = [
-    {key: 'login', title: 'Login'},
-    {key: 'register', title: 'Register'},
-  ];
-
   const scenes = {
     login: LoginScreen,
     register: RegisterScreen,
   };
 
   return (
-    <SafeAreaView style={{flex: 1}} edges={['top']}>
-      <AppTabView routes={routes} scenes={scenes} initialIndex={0} />;
-    </SafeAreaView>
+    <AppResponsiveView
+      testID="auth-screen"
+      style={AppTheme.components.container}>
+      <AppTabView
+        routes={routes}
+        scenes={scenes}
+        sceneProps={sceneProps}
+        initialIndex={0}
+      />
+    </AppResponsiveView>
   );
 };
 

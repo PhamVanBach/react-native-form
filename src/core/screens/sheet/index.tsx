@@ -1,11 +1,11 @@
-import React, {useCallback, useEffect, useRef} from 'react';
+import React, {useEffect, useRef} from 'react';
 import {
   Animated,
   BackHandler,
   Dimensions,
+  PanResponder,
   StyleSheet,
   View,
-  PanResponder,
 } from 'react-native';
 
 const {height: SCREEN_HEIGHT} = Dimensions.get('window');

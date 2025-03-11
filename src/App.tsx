@@ -9,7 +9,7 @@ import {BiometricsService} from './core/utils/biometrics';
 import {DatabaseService} from './database/services';
 import {store} from './core/redux/store';
 
-export default () => {
+const App = () => {
   useEffect(() => {
     DatabaseService.getInstance().initDatabase();
   }, []);
@@ -18,7 +18,7 @@ export default () => {
     const initBiometrics = async () => {
       const available = await BiometricsService.isBiometricsAvailable();
       if (available) {
-        await BiometricsService.createKeys(); // Create keys if needed
+        await BiometricsService.createKeys();
       }
     };
 
@@ -36,8 +36,10 @@ export default () => {
     <Provider store={store}>
       <SheetProvider>
         <SheetRegistration />
-        <MainNavigator />;
+        <MainNavigator />
       </SheetProvider>
     </Provider>
   );
 };
+
+export default App;

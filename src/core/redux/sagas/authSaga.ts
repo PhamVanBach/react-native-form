@@ -88,7 +88,6 @@ function* handleRegister(
       return;
     }
     yield put(registerUserSuccess());
-    yield call(navigate, 'Home');
   } catch (error: any) {
     const errorMessage = error?.message || 'An unexpected error occurred';
     yield put(registerUserFailed(errorMessage));

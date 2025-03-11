@@ -1,22 +1,24 @@
 import * as React from 'react';
-import MainNavigator from './core/navigation';
-import {InteractionManager} from 'react-native';
 import {useEffect} from 'react';
-import {BiometricsService} from './core/utils/biometrics';
-import {SheetRegistration} from './core/screens/sheet/sheet-registation';
+import {InteractionManager} from 'react-native';
+import {Provider} from 'react-redux';
+import MainNavigator from './core/navigation';
 import {SheetProvider} from './core/screens/sheet/contexts/SheetContext';
-// import {DatabaseService} from './database/services';
+import {SheetRegistration} from './core/screens/sheet/sheet-registation';
+import {BiometricsService} from './core/utils/biometrics';
+import {DatabaseService} from './database/services';
+import {store} from './core/redux/store';
 
-export default () => {
-  // useEffect(() => {
-  //   DatabaseService.getInstance().initDatabase();
-  // }, []);
+const App = () => {
+  useEffect(() => {
+    DatabaseService.getInstance().initDatabase();
+  }, []);
 
   useEffect(() => {
     const initBiometrics = async () => {
       const available = await BiometricsService.isBiometricsAvailable();
       if (available) {
-        await BiometricsService.createKeys(); // Create keys if needed
+        await BiometricsService.createKeys();
       }
     };
 
@@ -29,10 +31,15 @@ export default () => {
       InteractionManager.setDeadline(0);
     }, 0);
   }
+
   return (
-    <SheetProvider>
-      <SheetRegistration />
-      <MainNavigator />;
-    </SheetProvider>
+    <Provider store={store}>
+      <SheetProvider>
+        <SheetRegistration />
+        <MainNavigator />
+      </SheetProvider>
+    </Provider>
   );
 };
+
+export default App;

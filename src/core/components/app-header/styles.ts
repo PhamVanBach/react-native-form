@@ -1,15 +1,11 @@
-import { StyleSheet } from 'react-native';
-import { initialWindowMetrics } from 'react-native-safe-area-context';
+import {StyleSheet} from 'react-native';
+import AppTheme from '../../themes/app-themes';
 
 const styles = StyleSheet.create({
-  container: {
-    paddingTop: initialWindowMetrics?.insets?.top || 0,
-    paddingBottom: initialWindowMetrics?.insets?.bottom || 0,
-  },
   text: {
-    fontSize: 20,
+    fontSize: AppTheme.typography.sizes.lg,
     fontWeight: 'bold',
-    color: 'white',
+    color: AppTheme.palette.text.primary,
     textAlign: 'center',
   },
 });

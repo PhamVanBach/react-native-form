@@ -14,6 +14,8 @@ export const palette = {
     tertiary: '#F0F0F0',
     screen: '#fff4e6',
     blur: '#efefef',
+    white50: 'rgba(255, 255, 255, 0.5)',
+    black50: 'rgba(0, 0, 0, 0.5)',
     transparent: 'transparent',
   },
 
@@ -39,6 +41,14 @@ export const palette = {
     light: '#F0F0F0',
     medium: '#E0E0E0',
     dark: '#CCCCCC',
+  },
+
+  // Icon colors
+  icon: {
+    primary: '#000000',
+    secondary: '#666666',
+    tertiary: '#999999',
+    inverse: '#FFFFFF',
   },
 };
 

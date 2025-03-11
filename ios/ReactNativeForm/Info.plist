@@ -55,5 +55,7 @@
 	<string>$(PRODUCT_NAME) uses Face ID for authentication</string>
 	<key>NSCameraUsageDescription</key>
 	<string>$(PRODUCT_NAME) needs access to your Camera.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>We need access to your photo library to select images</string>
 </dict>
 </plist>

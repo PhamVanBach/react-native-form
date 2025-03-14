@@ -1,10 +1,11 @@
-import {configureStore} from '@reduxjs/toolkit';
+import {ConfigureStoreOptions, configureStore} from '@reduxjs/toolkit';
+import {persistReducer, persistStore} from 'redux-persist';
 import createSagaMiddleware from 'redux-saga';
-import {persistStore, persistReducer} from 'redux-persist';
+import {reactotron} from '../reactotron/reactotron-config';
 import {reduxStorage} from '../storage/mmkv';
+import {errorMiddleware} from './middleware/errorMiddleware';
 import rootReducer from './reducers';
 import rootSaga from './sagas';
-import {errorMiddleware} from './middleware/errorMiddleware';
 
 const persistConfig = {
   key: 'root',
@@ -13,9 +14,9 @@ const persistConfig = {
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
-const sagaMiddleware = createSagaMiddleware();
+const sagaMiddleware = createSagaMiddleware({});
 
-export const store = configureStore({
+const options: ConfigureStoreOptions = {
   reducer: persistedReducer,
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({
@@ -23,7 +24,14 @@ export const store = configureStore({
         ignoredActions: ['persist/PERSIST', 'persist/REHYDRATE'],
       },
     }).concat(sagaMiddleware, errorMiddleware),
-});
+};
+
+if (__DEV__) {
+  options.enhancers = getDefaultEnhancers =>
+    getDefaultEnhancers().concat(reactotron.createEnhancer!());
+}
+
+export const store = configureStore(options);
 
 export const persistor = persistStore(store);
 

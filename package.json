@@ -31,6 +31,7 @@
     "@react-navigation/native": "^7.0.15",
     "@react-navigation/native-stack": "^7.2.1",
     "@reduxjs/toolkit": "^2.6.0",
+    "axios": "^1.8.3",
     "react": "19.0.0",
     "react-hook-form": "^7.54.2",
     "react-native": "0.78.0",
@@ -74,6 +75,9 @@
     "prettier": "2.8.8",
     "react-native-svg-transformer": "^1.5.0",
     "react-test-renderer": "19.0.0",
+    "reactotron-react-native": "^5.1.12",
+    "reactotron-redux": "^3.1.11",
+    "reactotron-redux-saga": "^4.2.3",
     "typescript": "5.0.4"
   },
   "engines": {

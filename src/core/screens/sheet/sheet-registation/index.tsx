@@ -10,6 +10,7 @@ export const SheetRegistration: React.FC = () => {
   useEffect(() => {
     registerSheet(ESheetID.ACTION_BUTTON_SHEET, LockScreen);
     registerSheet(ESheetID.SCAN_QR_CODE_SHEET, ScanQRCodeComponent);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return null;

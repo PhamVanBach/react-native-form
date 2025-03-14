@@ -1,6 +1,9 @@
 import {call, put, takeLatest} from 'redux-saga/effects';
-import {DatabaseService} from '../../../database/services';
+import {AuthApi} from '../../api';
 import {navigate} from '../../navigation/navigationRef';
+import {storage} from '../../storage/mmkv';
+import {handleApiError} from '../../utils/apiErrorHandler';
+import {errorHandler} from '../../utils/errorHandler';
 import {
   login,
   loginFailed,
@@ -9,70 +12,33 @@ import {
   registerUserFailed,
   registerUserSuccess,
 } from '../reducers/authSlice';
-import {errorHandler} from '../../utils/errorHandler';
 
-const db = DatabaseService.getInstance();
-
-interface User {
-  id?: number;
-  name: string;
-  email: string;
-  password: string;
-}
-
-const selectUsers = async (
-  email: string,
-  password: string,
-): Promise<User | null> => {
-  try {
-    const users = await db.select('users');
-    return (
-      users.data.find(
-        (user: User) => user.email === email && user.password === password,
-      ) || null
-    );
-  } catch (error) {
-    throw new Error('Failed to fetch users');
-  }
-};
-
-const handleInsertUser = async (userData: Omit<User, 'id'>): Promise<User> => {
-  try {
-    const response = await db.insert('users', userData);
-    if (response.error) {
-      throw new Error(response.error.message || 'Failed to register user');
-    }
-    return response.data;
-  } catch (error) {
-    throw error;
-  }
-};
+const authApi = new AuthApi();
 
 function* handleLogin(
   action: ReturnType<typeof login>,
 ): Generator<any, void, any> {
   try {
     const {email, password} = action.payload;
-    const user = yield call(selectUsers, email, password);
 
-    if (!user) {
-      yield put(loginFailed('Invalid email or password'));
-      errorHandler.showError({
-        title: 'Login Failed',
-        message: 'Invalid email or password',
-      });
-      return;
-    }
+    // Call the API
+    const response = yield call(authApi.login, email, password);
 
+    // Store tokens in secure storage
+    const {user, token} = response.data;
+    storage.set('accessToken', token);
+    storage.set('refreshToken', token);
+
+    // Dispatch success action with user data
     yield put(loginSuccess(user));
+
+    // Navigate to home screen
     yield call(navigate, 'Home');
   } catch (error: any) {
-    const errorMessage = error?.message || 'An unexpected error occurred';
+    const errorMessage =
+      error?.response?.data?.message || 'Login failed. Please try again.';
     yield put(loginFailed(errorMessage));
-    errorHandler.showError({
-      title: 'Login Error',
-      message: errorMessage,
-    });
+    handleApiError(error);
   }
 }
 
@@ -81,20 +47,33 @@ function* handleRegister(
 ): Generator<any, void, any> {
   try {
     const {name, email, password} = action.payload;
-    const userData = {name, email, password};
 
-    const user = yield call(handleInsertUser, userData);
-    if (!user) {
-      return;
-    }
-    yield put(registerUserSuccess());
-  } catch (error: any) {
-    const errorMessage = error?.message || 'An unexpected error occurred';
-    yield put(registerUserFailed(errorMessage));
-    errorHandler.showError({
-      title: 'Register Failed',
-      message: errorMessage,
+    // Call the API
+    const response = yield call(authApi.register, {
+      name,
+      email,
+      password,
     });
+
+    // Store tokens in secure storage
+    const {tokens} = response.data;
+    storage.set('accessToken', tokens.accessToken);
+    storage.set('refreshToken', tokens.refreshToken);
+
+    // Dispatch success action
+    yield put(registerUserSuccess());
+
+    // Show success message
+    errorHandler.showError({
+      title: 'Registration Successful',
+      message: 'Your account has been created successfully.',
+    });
+  } catch (error: any) {
+    const errorMessage =
+      error?.response?.data?.message ||
+      'Registration failed. Please try again.';
+    yield put(registerUserFailed(errorMessage));
+    handleApiError(error);
   }
 }
 

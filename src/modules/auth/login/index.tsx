@@ -26,8 +26,8 @@ const LoginScreen = () => {
   } = useForm<any>({
     resolver: yupResolver(loginSchema),
     defaultValues: {
-      email: 'bachne@gmail.com',
-      password: '123456',
+      email: 'test@example.com',
+      password: 'password123',
     },
   });
 

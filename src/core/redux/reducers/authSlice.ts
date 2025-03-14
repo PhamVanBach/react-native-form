@@ -2,12 +2,14 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 
 interface AuthState {
+  accessToken: string | null;
   currentUser: any;
   isLoading: boolean;
   error: string | null;
 }
 
 const initialState: AuthState = {
+  accessToken: null,
   currentUser: null,
   isLoading: false,
   error: null,
@@ -26,8 +28,20 @@ const authSlice = createSlice({
     ) => {
       state.isLoading = true;
     },
-    loginSuccess: (state, action: PayloadAction<string>) => {
-      state.currentUser = action.payload;
+    loginSuccess: (
+      state,
+      action: PayloadAction<{
+        email: string;
+        name: string;
+        accessToken: string;
+      }>,
+    ) => {
+      const {email, name, accessToken} = action.payload;
+      state.currentUser = {
+        email: email,
+        name: name,
+      };
+      state.accessToken = accessToken;
       state.isLoading = false;
     },
     loginFailed: (state, action: PayloadAction<string>) => {

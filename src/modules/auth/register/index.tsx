@@ -41,7 +41,7 @@ const RegisterScreen = ({jumpTo}: RegisterScreenProps) => {
     password: string;
   }) => {
     dispatch(registerUser(data));
-    jumpTo?.('login');
+    // jumpTo?.('login');
   };
 
   if (!isReady) {

@@ -2,6 +2,7 @@ import * as React from 'react';
 import {useEffect} from 'react';
 import {InteractionManager} from 'react-native';
 import {Provider} from 'react-redux';
+import {SafeAreaProvider} from 'react-native-safe-area-context';
 import MainNavigator from './core/navigation';
 import {SheetProvider} from './core/screens/sheet/contexts/SheetContext';
 import {SheetRegistration} from './core/screens/sheet/sheet-registation';
@@ -33,12 +34,14 @@ const App = () => {
   }
 
   return (
-    <Provider store={store}>
-      <SheetProvider>
-        <SheetRegistration />
-        <MainNavigator />
-      </SheetProvider>
-    </Provider>
+    <SafeAreaProvider>
+      <Provider store={store}>
+        <SheetProvider>
+          <SheetRegistration />
+          <MainNavigator />
+        </SheetProvider>
+      </Provider>
+    </SafeAreaProvider>
   );
 };
 

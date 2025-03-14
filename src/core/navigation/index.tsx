@@ -3,7 +3,7 @@ import {BlurView} from '@react-native-community/blur';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import React from 'react';
+import React, {useEffect} from 'react';
 import {StatusBar, StyleSheet, TouchableOpacity, View} from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import AuthScreen from '../../modules/auth';
@@ -97,7 +97,7 @@ const TabStack = () => {
         name="Tracking"
         component={TrackingScreen}
         options={{
-          tabBarButtonTestID: 'profile-tab',
+          tabBarButtonTestID: 'tracking-tab',
         }}
       />
       <Tab.Screen
@@ -112,16 +112,21 @@ const TabStack = () => {
 };
 
 const MainNavigator = () => {
+  // Set up the global status bar when the navigator mounts
+  useEffect(() => {
+    // We need to set this up only once
+    StatusBar.setBarStyle('dark-content');
+    StatusBar.setTranslucent(true);
+    StatusBar.setBackgroundColor('transparent');
+  }, []);
+
   return (
     <>
-      <StatusBar translucent backgroundColor="transparent" />
       <NavigationContainer ref={navigationRef}>
         <MainStack.Navigator
           initialRouteName="Tabs"
           screenOptions={{
             headerShown: false,
-            statusBarTranslucent: true,
-            statusBarStyle: 'dark',
             animation: 'slide_from_right',
           }}>
           <MainStack.Screen name="Tabs" component={TabStack} />

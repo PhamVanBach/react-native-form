@@ -14,10 +14,10 @@ const BASE_URL = ''; // Your machine's IP address
 const api: AxiosInstance = axios.create({
   baseURL: BASE_URL,
   timeout: 15000,
-  // headers: {
-  //   'Content-Type': 'application/json',
-  //   Accept: 'application/json',
-  // },
+  headers: {
+    'Content-Type': 'application/json',
+    Accept: 'application/json',
+  },
 });
 
 // Request interceptor
